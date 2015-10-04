@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:grid="com.github.dkruglik.view.grid.*"
+                preinitialize="onInitHandler(event)" width="740" height="480">
+    <mx:Script><![CDATA[
+        import com.github.dkruglik.model.PersonVO;
+        import com.github.dkruglik.util.DataGenerator;
+
+        import mx.collections.ArrayCollection;
+        import mx.events.FlexEvent;
+
+        private static const MAX_ROWS:int = 7;
+
+        [Bindable]
+        public var provider:ArrayCollection;
+
+        private function onClickHandler(event:Event):void {
+            var itemIndex:int = parseInt(ageInput.text);
+            if (itemIndex >= provider.length) {
+                itemIndex = provider.length - 1;
+            }
+            provider.getItemAt(itemIndex).age += 3;
+        }
+
+        private function onInitHandler(event:FlexEvent):void {
+            provider = new ArrayCollection();
+            var personVO:PersonVO;
+            for (var i:int = 0; i < MAX_ROWS; i++) {
+                personVO = DataGenerator.generatePerson();
+                provider.addItem(personVO);
+            }
+        }
+        ]]></mx:Script>
+    <mx:HBox>
+        <mx:TextInput id="ageInput" restrict="[0-9]"/>
+        <mx:Button click="onClickHandler(event)" label="Change age"/>
+    </mx:HBox>
+    <grid:CustomDataGrid width="100%" height="100%" dataProvider="{provider}">
+        <grid:columns>
+            <mx:DataGridColumn dataField="firstName"/>
+            <mx:DataGridColumn dataField="lastName"/>
+            <mx:DataGridColumn dataField="age" minWidth="25"
+                               itemRenderer="com.github.dkruglik.view.renderer.AgeItemRenderer"/>
+            <mx:DataGridColumn dataField="citizen"/>
+            <mx:DataGridColumn dataField="sex" itemRenderer="com.github.dkruglik.view.renderer.SexItemRenderer"/>
+            <mx:DataGridColumn dataField="weight"/>
+            <mx:DataGridColumn dataField="height"/>
+        </grid:columns>
+    </grid:CustomDataGrid>
+</mx:Application>
